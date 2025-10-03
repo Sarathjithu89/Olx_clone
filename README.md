@@ -40,7 +40,7 @@ A modern, feature-rich clone of OLX built with **React**, **Firebase**, and **Ta
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/olx-clone.git
+git clone https://github.com/Sarathjithu89/Olx_clone.git
 cd olx-clone
 ```
 
