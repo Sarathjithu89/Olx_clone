@@ -3,7 +3,6 @@ import { Navbar } from "../components/Navbar/Navbar";
 import Login from "../components/Signin-modal/Login";
 import { getDataFromFireStore } from "../services/Firebase/Firebase";
 import { useItemContext } from "../context/Sellitems";
-import { SellModal } from "../components/SellModal/SellModal";
 import Card from "../components/Cards/Card";
 
 export const Homepage = () => {
@@ -21,12 +20,17 @@ export const Homepage = () => {
     };
     getItems();
   }, []);
+
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50">
+      {/* Navbar */}
       <Navbar toggleModal={toggleModal} toggleSellModal={toggleSellModal} />
+      {/* Login */}
       <Login toggleModal={toggleModal} status={isModelOpen} />
-      {/* <SellModal toggleSellModal={toggleSellModal} status={isSellModalOpen} /> */}
-      <Card items={itemCtx.items || []} />
+      {/* Main Content Container */}
+      <main className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pb-8 ">
+        <Card items={itemCtx.items || []} />
+      </main>
     </div>
   );
 };

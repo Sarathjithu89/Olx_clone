@@ -27,7 +27,6 @@ const logout = async () => {
     console.error("Error signing out:", error);
   }
 };
-
 //fetch data from fireStore;
 const getDataFromFireStore = async () => {
   try {
