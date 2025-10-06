@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { doc, updateDoc } from "firebase/firestore";
-import { fireStore } from "../../services/Firebase/Firebase";
+import { fireStore } from "../../services/Firebase";
 import Swal from "sweetalert2";
 import { FiUploadCloud } from "react-icons/fi";
 import { FaArrowLeft } from "react-icons/fa";

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Navbar } from "../components/Navbar/Navbar";
 import Login from "../components/Signin-modal/Login";
-import { getDataFromFireStore } from "../services/Firebase/Firebase";
+import { getDataFromFireStore } from "../services/Firebase";
 import { useItemContext } from "../context/Sellitems";
 import Card from "../components/Cards/Card";
 

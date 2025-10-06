@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { userAuth } from "../../context/Auth/Auth";
 import { addDoc, collection } from "firebase/firestore";
-import {
-  getDataFromFireStore,
-  fireStore,
-} from "../../services/Firebase/Firebase";
+import { getDataFromFireStore, fireStore } from "../../services/Firebase";
 import { useNavigate } from "react-router-dom";
 import {
   FaArrowLeft,

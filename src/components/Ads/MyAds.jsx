@@ -8,7 +8,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { fireStore } from "../../services/Firebase/Firebase";
+import { fireStore } from "../../services/Firebase";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Navbar } from "../Navbar/Navbar";

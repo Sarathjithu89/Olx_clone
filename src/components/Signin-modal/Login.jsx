@@ -7,7 +7,7 @@ import avatar from "../../assets/loginEntryPointChat.webp";
 import close from "../../assets/close.svg";
 import google from "../../assets/google.png";
 import { signInWithPopup } from "firebase/auth";
-import { auth, provider } from "../../services/Firebase/Firebase";
+import { auth, provider } from "../../services/Firebase";
 
 const Login = ({ toggleModal, status }) => {
   const handleClick = async () => {

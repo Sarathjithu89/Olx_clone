@@ -4,7 +4,7 @@ import search_home from "../../assets/search.svg";
 import arrow_home from "../../assets/arrow.svg";
 import sellbtn from "../../assets/sellbtn.png";
 import { FiHeart, FiMenu, FiX } from "react-icons/fi";
-import { auth, logout } from "../../services/Firebase/Firebase";
+import { auth, logout } from "../../services/Firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 

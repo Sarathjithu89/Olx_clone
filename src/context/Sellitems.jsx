@@ -1,6 +1,6 @@
 import { collection, getDocs } from "firebase/firestore";
 import { createContext, useState, useEffect, useContext } from "react";
-import { fireStore } from "../services/Firebase/Firebase";
+import { fireStore } from "../services/Firebase";
 
 //Create context
 const ItemContext = createContext(null);
