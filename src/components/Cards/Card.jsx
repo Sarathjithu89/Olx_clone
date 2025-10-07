@@ -1,91 +1,173 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import Favorite from "../../assets/favorite.svg";
+import { useNavigate } from "react-router-dom";
+import { FaHeart, FaRegHeart, FaMapMarkerAlt } from "react-icons/fa";
+import { useFavorites } from "../../context/Favorites";
+import { userAuth } from "../../context/Auth/Auth";
+import Swal from "sweetalert2";
 
 const Card = ({ items }) => {
-  const getImageUrl = (item) => {
-    // Handle new format (array of images)
-    if (
-      item.imageUrls &&
-      Array.isArray(item.imageUrls) &&
-      item.imageUrls.length > 0
-    ) {
-      return item.imageUrls[0];
-    }
-    // Handle old format (single image)
-    if (item.imageUrl) {
-      return item.imageUrl;
-    }
-    // Fallback placeholder
-    return "https://via.placeholder.com/300x200?text=No+Image";
+  const navigate = useNavigate();
+  const { user } = userAuth();
+  const { isFavorite, toggleFavorites } = useFavorites();
+
+  const handleCardClick = (item) => {
+    navigate("/details", { state: { item } });
   };
 
+  const handleFavoriteClick = async (e, itemId) => {
+    e.stopPropagation();
+    if (!user) {
+      Swal.fire({
+        icon: "warning",
+        title: "Login Required",
+        text: "Please login to add items to favorites",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+
+    try {
+      await toggleFavorites(itemId);
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to update favorites",
+      });
+    }
+  };
+
+  const formatDate = (timestamp) => {
+    if (!timestamp) return "";
+
+    let date;
+    if (timestamp?.toDate) {
+      date = timestamp.toDate();
+    } else if (timestamp instanceof Date) {
+      date = timestamp;
+    } else {
+      date = new Date(timestamp);
+    }
+
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  if (!items || items.length === 0) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-[40vh] text-center">
+        <svg
+          className="w-20 h-20 text-gray-300 mb-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.5}
+            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+          />
+        </svg>
+        <p className="text-lg text-gray-600">No items available</p>
+        <p className="text-sm text-gray-500 mt-2">
+          Check back later for new listings!
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <div className="px-4 sm:px-10 md:px-16 lg:px-24 py-8 bg-gray-100 min-h-screen">
-      <h1 className="text-2xl font-bold text-[#002f34] mb-6">
-        Fresh recommendations
-      </h1>
+    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
+      {items.map((item) => (
+        <div
+          key={item.id}
+          onClick={() => handleCardClick(item)}
+          className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer group relative"
+        >
+          {/* Image Section */}
+          <div className="relative h-40 sm:h-48 bg-gray-100 overflow-hidden">
+            <img
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              src={
+                item.imageUrl ||
+                "https://via.placeholder.com/300x200?text=No+Image"
+              }
+              alt={item.title}
+              onError={(e) => {
+                e.target.src =
+                  "https://via.placeholder.com/300x200?text=No+Image";
+              }}
+            />
 
-      {items.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20">
-          <p className="text-xl text-gray-500 mb-2">No items found</p>
-          <p className="text-sm text-gray-400">
-            Start by posting your first ad!
-          </p>
-        </div>
-      ) : (
-        <div className="grid gap-4 sm:gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {items.map((item) => (
-            <Link
-              to="/details"
-              state={{ item }}
-              key={item.id}
-              className="group"
+            {/* Favorite Button */}
+            <button
+              onClick={(e) => handleFavoriteClick(e, item.id)}
+              className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm hover:bg-white p-2 rounded-full shadow-md transition-all duration-200 hover:scale-110 z-10"
+              aria-label={
+                isFavorite(item.id)
+                  ? "Remove from favorites"
+                  : "Add to favorites"
+              }
             >
-              <div className="relative w-full h-80 rounded-md bg-white border border-gray-200 shadow-sm hover:shadow-md transition duration-200 cursor-pointer overflow-hidden">
-                {/* Favorite Button */}
-                <div className="absolute top-3 right-3 z-10 flex justify-center items-center p-2 bg-white border border-gray-200 rounded-full hover:shadow-md transition-transform hover:scale-110">
-                  <img className="w-5" src={Favorite} alt="favorite" />
-                </div>
+              {isFavorite(item.id) ? (
+                <FaHeart className="text-red-500 text-lg" />
+              ) : (
+                <FaRegHeart className="text-gray-600 text-lg hover:text-red-500" />
+              )}
+            </button>
 
-                {/* Image */}
-                <div className="w-full h-44 bg-gray-50 flex items-center justify-center overflow-hidden border-b border-gray-200">
-                  <img
-                    className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
-                    src={getImageUrl(item)}
-                    alt={item.title}
-                    onError={(e) => {
-                      e.target.src =
-                        "https://via.placeholder.com/300x200?text=No+Image";
-                    }}
-                  />
-                </div>
-
-                {/* Details */}
-                <div className="p-3 flex flex-col h-36">
-                  <h2 className="font-bold text-lg text-[#002f34] truncate">
-                    ₹{" "}
-                    {item.price
-                      ? Number(item.price).toLocaleString("en-IN")
-                      : "0"}
-                  </h2>
-                  <p className="text-sm text-gray-600 mt-1 truncate">
-                    {item.category}
-                  </p>
-                  <p className="text-sm text-gray-800 mt-1 line-clamp-2 flex-1">
-                    {item.title}
-                  </p>
-                  {item.location && (
-                    <p className="text-xs text-gray-500 mt-2 truncate">
-                      📍 {item.location}
-                    </p>
-                  )}
-                </div>
+            {/* Featured Badge */}
+            {item.featured && (
+              <div className="absolute top-2 left-2 bg-gradient-to-r from-yellow-400 to-yellow-500 text-white text-xs font-bold px-2 py-1 rounded shadow-lg">
+                ⭐ FEATURED
               </div>
-            </Link>
-          ))}
+            )}
+
+            {/* Sold Badge */}
+            {item.isSold && (
+              <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                <span className="bg-green-600 text-white font-bold px-4 py-2 rounded-lg text-lg">
+                  SOLD
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Content Section */}
+          <div className="p-3 sm:p-4">
+            <h3 className="text-base sm:text-lg font-bold text-gray-900 truncate mb-1 group-hover:text-blue-600 transition-colors">
+              {item.title}
+            </h3>
+
+            <p className="text-lg sm:text-xl font-bold text-blue-600 mb-2">
+              ₹ {item.price?.toLocaleString()}
+            </p>
+
+            <div className="flex items-center justify-between text-xs sm:text-sm text-gray-600 mb-2">
+              <div className="flex items-center gap-1 truncate flex-1">
+                <FaMapMarkerAlt className="text-red-500 flex-shrink-0" />
+                <span className="truncate">
+                  {item.location || "Location N/A"}
+                </span>
+              </div>
+              <span className="flex-shrink-0 ml-2 text-gray-500">
+                {formatDate(item.createdAt || item.createAt)}
+              </span>
+            </div>
+
+            {item.category && (
+              <div className="mt-2 pt-2 border-t border-gray-100">
+                <span className="text-xs text-gray-500 font-medium uppercase tracking-wide">
+                  {item.category}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
-      )}
+      ))}
     </div>
   );
 };

@@ -7,6 +7,7 @@ import { SellModal } from "./components/SellModal/SellModal";
 import MyAds from "./components/Ads/MyAds";
 import EditAd from "./components/Edit/EditAd";
 import Details from "./components/Details/Details";
+import Favorites from "./pages/Favorites";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
             </UserRoute>
           }
         />
+        <Route path="/favorites" element={<Favorites />} />
       </Routes>
     </>
   );

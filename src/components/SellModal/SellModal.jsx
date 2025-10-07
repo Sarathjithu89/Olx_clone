@@ -107,7 +107,7 @@ export const SellModal = () => {
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
-  // --- Validation ---
+  //Validation
   const validateStep2 = () => {
     const newErrors = {};
     if (!title.trim()) newErrors.title = "Title is required";
@@ -124,7 +124,6 @@ export const SellModal = () => {
         if (!categoryFields[field] || !categoryFields[field].trim()) {
           newErrors[field] = `${FIELD_LABELS[field]} is required`;
         }
-        // Numeric validation
         if (
           ["year", "km", "salary", "price"].includes(field) &&
           categoryFields[field]
@@ -147,13 +146,13 @@ export const SellModal = () => {
     return newErrors;
   };
 
-  // --- Image handling ---
+  //Image handling
   const handleImageUpload = (e) => {
     if (e.target.files) setImage(e.target.files[0]);
   };
   const removeImage = () => setImage(null);
 
-  // --- Navigation ---
+  //Navigation
   const handleCategorySelect = (categoryId) => {
     setSelectedCategory(categoryId);
     setStep(2);
@@ -174,7 +173,7 @@ export const SellModal = () => {
     setErrors({});
   };
 
-  // --- Resize image to base64 to prevent large sizes ---
+  //Resize image
   const resizeImage = (file, maxWidth = 800) =>
     new Promise((resolve) => {
       const reader = new FileReader();
@@ -194,7 +193,7 @@ export const SellModal = () => {
       reader.readAsDataURL(file);
     });
 
-  // --- Submit ---
+  //Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!auth?.user) {
@@ -215,6 +214,10 @@ export const SellModal = () => {
 
       const category = CATEGORIES.find((c) => c.id === selectedCategory);
 
+      const createdAt = new Date();
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 30); //after 30 days
+
       await addDoc(collection(fireStore, "Products"), {
         title,
         category: category.name,
@@ -226,7 +229,11 @@ export const SellModal = () => {
         imageUrl,
         userId: auth.user.uid,
         userName: auth.user.displayName || "Anonymous",
-        createAt: new Date(),
+        createdAt: createdAt,
+        expiryDate: expiryDate,
+        isSold: false,
+        views: 0,
+        likes: 0,
       });
 
       // Reset
@@ -250,7 +257,7 @@ export const SellModal = () => {
     }
   };
 
-  // --- Render Steps ---
+  //Render Steps
   const renderCategorySelection = () => {
     const groupedCategories = [
       {
@@ -548,27 +555,6 @@ export const SellModal = () => {
               onClick={handleBack}
               className="text-black text-lg sm:text-xl cursor-pointer mr-3 sm:mr-4 flex-shrink-0"
             />
-            <div className="flex items-center space-x-1 sm:space-x-2 overflow-x-auto">
-              {[1, 2, 3].map((n) => (
-                <>
-                  <div
-                    key={n}
-                    className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-base flex-shrink-0 ${
-                      step >= n ? "bg-teal-500 text-white" : "bg-gray-300"
-                    }`}
-                  >
-                    {n}
-                  </div>
-                  {n !== 3 && (
-                    <div
-                      className={`h-0.5 sm:h-1 w-8 sm:w-12 flex-shrink-0 ${
-                        step > n ? "bg-teal-500" : "bg-gray-300"
-                      }`}
-                    />
-                  )}
-                </>
-              ))}
-            </div>
           </div>
         </div>
 

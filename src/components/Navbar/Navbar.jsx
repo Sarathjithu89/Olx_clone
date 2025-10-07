@@ -139,7 +139,7 @@ export const Navbar = ({ toggleModal }) => {
       </div>
 
       <FiHeart
-        onClick={user ? () => navigate("/") : toggleModal}
+        onClick={user ? () => navigate("/favorites") : toggleModal}
         className="text-2xl cursor-pointer flex-shrink-0"
       />
 
