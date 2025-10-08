@@ -22,17 +22,21 @@ const Details = () => {
 
   const toggleModal = () => setModal(!openModal);
 
-  // Format date helper
   const formatDate = (timestamp) => {
     if (!timestamp) return "N/A";
-
     let date;
-    if (timestamp?.toDate) {
+    if (timestamp?.toDate && typeof timestamp.toDate === "function") {
       date = timestamp.toDate();
+    } else if (timestamp?.seconds) {
+      date = new Date(timestamp.seconds * 1000);
     } else if (timestamp instanceof Date) {
       date = timestamp;
     } else {
       date = new Date(timestamp);
+    }
+
+    if (isNaN(date.getTime())) {
+      return "N/A";
     }
 
     return date.toLocaleDateString("en-US", {
@@ -42,7 +46,7 @@ const Details = () => {
     });
   };
 
-  // Handle missing item data
+  //missing item data
   if (!item) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -287,9 +291,7 @@ const Details = () => {
                   </div>
                   <div className="flex items-center gap-2 text-gray-600">
                     <FaCalendarAlt className="text-gray-500" />
-                    <span>
-                      Posted on {formatDate(item?.createdAt || item?.createAt)}
-                    </span>
+                    <span>Posted on {formatDate(item?.createdAt)}</span>
                   </div>
                 </div>
               </div>
