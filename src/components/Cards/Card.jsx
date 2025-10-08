@@ -122,7 +122,7 @@ const Card = ({ items }) => {
             {/* Featured Badge */}
             {item.featured && (
               <div className="absolute top-2 left-2 bg-gradient-to-r from-yellow-400 to-yellow-500 text-white text-xs font-bold px-2 py-1 rounded shadow-lg">
-                ⭐ FEATURED
+                FEATURED
               </div>
             )}
 
